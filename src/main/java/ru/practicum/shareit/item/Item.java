@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.item;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ItemDto {
+public class Item {
     private long id;
 
     @NotBlank(message = "Item name can't be blank")
@@ -19,6 +19,8 @@ public class ItemDto {
 
     @NotNull(message = "Availability status is absent")
     private Boolean available;
+
+    private long owner;
 
     private long request;
 }
