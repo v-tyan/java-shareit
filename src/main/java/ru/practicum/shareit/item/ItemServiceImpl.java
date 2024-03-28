@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -43,6 +44,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> searchItems(String text) {
         log.info("Search items with keyword = {}", text);
+        if (text.isEmpty())
+            return new ArrayList<>();
         return itemRepository.searchItems(text);
     }
 

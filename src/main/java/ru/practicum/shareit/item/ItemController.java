@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,8 +49,6 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam String text) {
-        if (text.isEmpty())
-            return new ArrayList<>();
         return itemService.searchItems(text).stream()
                 .map(i -> ItemMapper.toItemDto(i))
                 .collect(Collectors.toList());
