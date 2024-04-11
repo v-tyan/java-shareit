@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -16,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoBooking;
 
 @RestController
 @RequestMapping("/items")
@@ -25,32 +26,36 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/{id}")
-    public ItemDto getItem(@PathVariable long id) {
-        return ItemMapper.toItemDto(itemService.getItem(id));
+    public ItemDtoBooking getItem(@RequestHeader(name = "X-Sharer-User-Id") long ownerId, @PathVariable long id) {
+        return itemService.getItem(id, ownerId);
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.getItemsByUser(userId).stream()
-                .map(item -> ItemMapper.toItemDto(item))
-                .collect(Collectors.toList());
+    public List<ItemDtoBooking> getItemsByUser(@RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.getItemsByUser(userId);
     }
 
     @PostMapping
     public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
-        return ItemMapper.toItemDto(itemService.createItem(ItemMapper.fromItemDto(itemDto, userId)));
+        return itemService.createItem(userId, itemDto);
     }
 
     @PatchMapping("/{id}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto itemDto,
             @PathVariable long id) {
-        return ItemMapper.toItemDto(itemService.updateItem(id, ItemMapper.fromItemDto(itemDto, userId)));
+        return itemService.updateItem(id, itemDto, userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam String text) {
-        return itemService.searchItems(text).stream()
-                .map(i -> ItemMapper.toItemDto(i))
-                .collect(Collectors.toList());
+        return itemService.searchItems(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(
+            @PathVariable long itemId,
+            @RequestBody @Valid CommentDto commentDto,
+            @RequestHeader(name = "X-Sharer-User-Id") long authorId) {
+        return itemService.createComment(itemId, commentDto, authorId);
     }
 }
