@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.exception.BookingNotAvailableException;
@@ -24,6 +25,8 @@ import ru.practicum.shareit.user.exception.UserNotFoundException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
+@Slf4j
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
@@ -32,6 +35,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingDtoResponse createBooking(long userId, BookingDtoRequest bookingDtoRequest) {
+        log.info("Creating booking userId = {}, bookingDto = {}", userId, bookingDtoRequest);
+
         if (bookingDtoRequest.getStart().isEqual(bookingDtoRequest.getEnd())
                 || bookingDtoRequest.getEnd().isBefore(bookingDtoRequest.getStart())) {
             throw new BadRequestException("Start and End not valid");
@@ -58,6 +63,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingDtoResponse updateBooking(long bookingId, long ownerId, boolean approved) {
+        log.info("Updating booking state bookingId = {}, ownerId = {}, approved = {}", bookingId, ownerId, approved);
+
         userRepository.findById(ownerId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         Booking booking = bookingRepository.findById(bookingId)
@@ -81,8 +88,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public BookingDtoResponse getBooking(long bookingId, long userId) {
+        log.info("Get booking request bookingId = {}, userId = {}");
+
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found"));
 
@@ -95,6 +103,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDtoResponse> getBookings(long ownerId, String state) {
+        log.info("Get user bookings by state: ownerId = {}, state = {}", ownerId, state);
+
         checkUserAndState(ownerId, state);
 
         List<Booking> bookings = new ArrayList<>();
@@ -140,6 +150,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDtoResponse> getBookingFromOwner(long ownerId, String state) {
+        log.info("Get user's item bookings by state: ownerId = {}, state = {}", ownerId, state);
+
         checkUserAndState(ownerId, state);
 
         List<Booking> bookings = new ArrayList<>();

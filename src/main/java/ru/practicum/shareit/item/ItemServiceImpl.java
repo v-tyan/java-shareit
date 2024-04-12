@@ -27,6 +27,7 @@ import ru.practicum.shareit.user.exception.UserNotFoundException;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -86,7 +87,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public CommentDto createComment(long itemId, CommentDto commentDto, long authorId) {
+        log.info("Creating comment for itemId = {}, from authorId = {}, commentDto = {}", itemId, authorId, commentDto);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException("Item with id = " + itemId + " not found"));
         User user = userRepository.findById(authorId)
@@ -101,7 +104,7 @@ public class ItemServiceImpl implements ItemService {
                 Sort.by(Sort.Direction.DESC, "start")).isEmpty()) {
 
             comment.setItem(item);
-            comment.setAuthorId(user);
+            comment.setAuthor(user);
             comment.setCreated(LocalDateTime.now());
             commentRepository.save(comment);
             return CommentMapper.toCommentDto(comment);
