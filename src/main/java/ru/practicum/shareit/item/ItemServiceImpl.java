@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,9 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoBooking;
 import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestRepository;
+import ru.practicum.shareit.request.exception.RequestNotFoundException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
@@ -33,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     public ItemDtoBooking getItem(long itemId, long userId) {
@@ -43,9 +48,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoBooking> getItemsByUser(long userId) {
+    public List<ItemDtoBooking> getItemsByUser(long userId, int from, int size) {
         log.info("Requsted items of user id = {}", userId);
-        List<Item> userItems = itemRepository.findAllByOwnerIdOrderByIdAsc(userId);
+        List<Item> userItems = itemRepository.findAllByOwnerIdOrderByIdAsc(userId, PageRequest.of(from / size, size));
         return setBookingsAndComments(userId, userItems);
     }
 
@@ -54,8 +59,12 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto createItem(long userId, ItemDto itemDto) {
         log.info("Request to create item = {}", itemDto);
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
-        // TODO: query request after request repo implementation
-        Item item = ItemMapper.fromItemDto(itemDto, user, null);
+        ItemRequest itemRequest = null;
+        if (itemDto.getRequestId() != null) {
+            itemRequest = itemRequestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new RequestNotFoundException("Request not found"));
+        }
+        Item item = ItemMapper.fromItemDto(itemDto, user, itemRequest);
         return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
@@ -79,11 +88,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItems(String text) {
+    public List<ItemDto> searchItems(String text, int from, int size) {
         log.info("Search items with keyword = {}", text);
         if (text.isEmpty())
             return new ArrayList<>();
-        return ItemMapper.mapToItemDto(itemRepository.searchItems(text));
+        return ItemMapper.mapToItemDto(itemRepository.searchItems(text, PageRequest.of(from / size, size)));
     }
 
     @Override

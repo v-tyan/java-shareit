@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.practicum.shareit.booking.exception.BookingNotAvailableException;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.request.exception.RequestNotFoundException;
 import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 
@@ -37,6 +38,13 @@ public class ErrorHandler {
     public ErrorResponse handleBookingNotFound(final BookingNotFoundException e) {
         log.warn("BookingNotFoundException - {}", e.getMessage());
         return new ErrorResponse("BookingNotFound", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleRequestNotFound(final RequestNotFoundException e) {
+        log.warn("RequestNotFoundException - {}", e.getMessage());
+        return new ErrorResponse("RequestNotFound", e.getMessage());
     }
 
     @ExceptionHandler

@@ -3,7 +3,9 @@ package ru.practicum.shareit.booking;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +23,7 @@ import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
+@Validated
 public class BookingController {
     private final BookingService bookingService;
 
@@ -49,14 +52,18 @@ public class BookingController {
     @GetMapping
     public List<BookingDtoResponse> getBookings(
             @RequestParam(defaultValue = "ALL") String state,
-            @RequestHeader(name = "X-Sharer-User-Id") long ownerId) {
-        return bookingService.getBookings(ownerId, state);
+            @RequestHeader(name = "X-Sharer-User-Id") long ownerId,
+            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(defaultValue = "10") @PositiveOrZero int size) {
+        return bookingService.getBookings(ownerId, state, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingDtoResponse> getBookingFromOwner(
             @RequestParam(defaultValue = "ALL") String state,
-            @RequestHeader(name = "X-Sharer-User-Id") long ownerId) {
-        return bookingService.getBookingFromOwner(ownerId, state);
+            @RequestHeader(name = "X-Sharer-User-Id") long ownerId,
+            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(defaultValue = "10") @PositiveOrZero int size) {
+        return bookingService.getBookingFromOwner(ownerId, state, from, size);
     }
 }

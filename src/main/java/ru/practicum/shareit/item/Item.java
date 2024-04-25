@@ -36,7 +36,7 @@ public class Item {
     @Id
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotBlank(message = "Item name can't be blank")
     @Column

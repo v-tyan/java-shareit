@@ -1,6 +1,6 @@
 package ru.practicum.shareit.request;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +37,7 @@ public class ItemRequest {
     @Id
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotBlank
     @Column
@@ -50,5 +50,5 @@ public class ItemRequest {
     private User requestor;
 
     @Column
-    private LocalDate created;
+    private LocalDateTime created;
 }

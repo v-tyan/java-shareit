@@ -20,5 +20,5 @@ public class ItemDto {
     @NotNull(message = "Availability status is absent")
     private Boolean available;
 
-    private Long request;
+    private Long requestId;
 }
