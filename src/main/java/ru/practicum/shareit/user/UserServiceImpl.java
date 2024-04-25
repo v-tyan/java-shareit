@@ -3,43 +3,61 @@ package ru.practicum.shareit.user;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         log.info("Requested list of All Users");
-        return userRepository.getAllUsers();
+        return UserMapper.mapToUserDto(userRepository.findAll());
     }
 
     @Override
-    public User getUser(long id) {
+    public UserDto getUser(long id) {
         log.info("Requested User id = {}", id);
-        return userRepository.getUser(id);
+        return userRepository.findById(id)
+                .map(UserMapper::toUserDto)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Override
-    public User createUser(User user) {
-        log.info("Request to create User = {}", user);
-        return userRepository.createUser(user);
+    @Transactional
+    public UserDto createUser(UserDto userDto) {
+        log.info("Request to create User = {}", userDto);
+        User user = UserMapper.fromUserDto(userDto);
+        return UserMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
-    public User updateUser(long id, User user) {
-        log.info("Request to update User = {} with id = {}", user, id);
-        return userRepository.updateUser(id, user);
+    @Transactional
+    public UserDto updateUser(long id, UserDto userDto) {
+        log.info("Request to update User = {} with id = {}", userDto, id);
+        return userRepository.findById(id)
+                .map(u -> {
+                    if (userDto.getEmail() != null)
+                        u.setEmail(userDto.getEmail());
+                    if (userDto.getName() != null)
+                        u.setName(userDto.getName());
+                    return UserMapper.toUserDto(userRepository.save(u));
+                })
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Override
+    @Transactional
     public void deleteUser(long id) {
-        userRepository.deleteUser(id);
+        userRepository.deleteById(id);
     }
 
 }

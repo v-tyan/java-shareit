@@ -1,30 +1,26 @@
 package ru.practicum.shareit.booking.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.booking.BookingStatus;
 
 @Data
 @Builder
-public class BookingDto {
+public class BookingDtoRequest {
     private long id;
 
     @FutureOrPresent(message = "Start date can't be in the past")
-    private LocalDate start;
+    @NotNull
+    private LocalDateTime start;
 
     @FutureOrPresent(message = "End date can't be in the past")
-    private LocalDate end;
+    @NotNull
+    private LocalDateTime end;
 
     @NotNull
-    private long item;
-
-    @NotNull
-    private long booker;
-
-    private BookingStatus status;
+    private long itemId;
 }

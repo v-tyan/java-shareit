@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,24 +25,22 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getAllUsers() {
-        return userService.getAllUsers().stream()
-                .map(u -> UserMapper.toUserDto(u))
-                .collect(Collectors.toList());
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
     public UserDto getUser(@PathVariable long id) {
-        return UserMapper.toUserDto(userService.getUser(id));
+        return userService.getUser(id);
     }
 
     @PostMapping
     public UserDto createUser(@Validated(Create.class) @RequestBody UserDto userDto) {
-        return UserMapper.toUserDto(userService.createUser(UserMapper.fromUserDto(userDto)));
+        return userService.createUser(userDto);
     }
 
     @PatchMapping("/{id}")
     public UserDto updateUser(@PathVariable long id, @Validated(Update.class) @RequestBody UserDto userDto) {
-        return UserMapper.toUserDto(userService.updateUser(id, UserMapper.fromUserDto(userDto)));
+        return userService.updateUser(id, userDto);
     }
 
     @DeleteMapping("/{id}")
