@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import ru.practicum.shareit.booking.dto.BookingDtoForItem;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.exception.BookingNotAvailableException;
@@ -326,6 +327,7 @@ class BookingServiceImplTest {
     @Test
     void create_whenAllIsOk_thenBookingSaved() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
+        BookingMapper.toBookingDtoForItem(booking);
         BookingDtoResponse bDto = BookingMapper.toBookingDtoResponse(booking);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user2));
