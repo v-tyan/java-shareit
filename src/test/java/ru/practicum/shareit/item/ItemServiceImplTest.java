@@ -72,7 +72,7 @@ class ItemServiceImplTest {
         User user = User.builder()
                 .id(null)
                 .name("user")
-                .email("user@user.ru")
+                .email("email@email.ru")
                 .build();
         ItemRequest itemRequest = ItemRequest.builder()
                 .id(1L)
@@ -126,7 +126,7 @@ class ItemServiceImplTest {
         User user = User.builder()
                 .id(1L)
                 .name("user")
-                .email("user@user.ru")
+                .email("email@email.ru")
                 .build();
         ItemDto itemDto = ItemDto.builder()
                 .id(1L)
@@ -178,7 +178,7 @@ class ItemServiceImplTest {
         User user = User.builder()
                 .id(1L)
                 .name("user")
-                .email("user@user.ru")
+                .email("email@email.ru")
                 .build();
         Item item = Item.builder()
                 .id(1L)
@@ -210,7 +210,7 @@ class ItemServiceImplTest {
         User user = User.builder()
                 .id(1L)
                 .name("user")
-                .email("user@user.ru")
+                .email("email@email.ru")
                 .build();
         Item item = Item.builder()
                 .id(1L)

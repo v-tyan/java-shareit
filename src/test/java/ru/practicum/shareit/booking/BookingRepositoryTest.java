@@ -22,6 +22,4 @@ class BookingRepositoryTest {
     void contextLoads() {
         assertNotNull(em);
     }
-
-    // TODO :(
 }
