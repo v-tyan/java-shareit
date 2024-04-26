@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
@@ -247,5 +249,37 @@ class ItemServiceImplTest {
         assertEquals(forSend.getId(), actual.getId());
         assertEquals(forSend.getText(), actual.getText());
         assertEquals(forSend.getAuthor().getName(), actual.getAuthorName());
+    }
+
+    @Test
+    void createComment_whenCommentOnOwn_thenException() {
+        User user = User.builder()
+                .id(1L)
+                .name("user")
+                .email("email@email.ru")
+                .build();
+        Item item = Item.builder()
+                .id(1L)
+                .name("name")
+                .description("description")
+                .available(true)
+                .owner(user)
+                .request(null)
+                .build();
+        CommentDto commentDto = CommentDto.builder()
+                .id(1L)
+                .text("Хорошая дрель")
+                .authorName(user.getName())
+                .build();
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        when(bookingRepository.findByBookerIdAndItemIdAndEndBefore(anyLong(),
+                anyLong(), any(), any()))
+                .thenReturn(new ArrayList<>());
+
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                () -> itemService.createComment(item.getId(), commentDto, user.getId()));
+        assertEquals("This user can't comment on this", ex.getMessage());
     }
 }
