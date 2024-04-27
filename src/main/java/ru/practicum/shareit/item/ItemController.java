@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 import org.springframework.validation.annotation.Validated;
@@ -36,7 +37,7 @@ public class ItemController {
     @GetMapping
     public List<ItemDtoBooking> getItemsByUser(@RequestHeader("X-Sharer-User-Id") long userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-            @RequestParam(defaultValue = "10") @PositiveOrZero int size) {
+            @RequestParam(defaultValue = "10") @Positive int size) {
         return itemService.getItemsByUser(userId, from, size);
     }
 
@@ -54,7 +55,7 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam String text,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-            @RequestParam(defaultValue = "10") @PositiveOrZero int size) {
+            @RequestParam(defaultValue = "10") @Positive int size) {
         return itemService.searchItems(text, from, size);
     }
 

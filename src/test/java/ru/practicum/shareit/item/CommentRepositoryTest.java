@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @RunWith(SpringRunner.class)
-class CommentRepositoryTest {
+public class CommentRepositoryTest {
     User user = User.builder()
             .id(null)
             .name("user")

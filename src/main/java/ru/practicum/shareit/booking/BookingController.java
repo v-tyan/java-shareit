@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 import org.springframework.validation.annotation.Validated;
@@ -54,7 +55,7 @@ public class BookingController {
             @RequestParam(defaultValue = "ALL") String state,
             @RequestHeader(name = "X-Sharer-User-Id") long ownerId,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-            @RequestParam(defaultValue = "10") @PositiveOrZero int size) {
+            @RequestParam(defaultValue = "10") @Positive int size) {
         return bookingService.getBookings(ownerId, state, from, size);
     }
 
@@ -63,7 +64,7 @@ public class BookingController {
             @RequestParam(defaultValue = "ALL") String state,
             @RequestHeader(name = "X-Sharer-User-Id") long ownerId,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-            @RequestParam(defaultValue = "10") @PositiveOrZero int size) {
+            @RequestParam(defaultValue = "10") @Positive int size) {
         return bookingService.getBookingFromOwner(ownerId, state, from, size);
     }
 }

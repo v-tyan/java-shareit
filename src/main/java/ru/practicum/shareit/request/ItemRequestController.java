@@ -2,6 +2,7 @@ package ru.practicum.shareit.request;
 
 import java.util.List;
 
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 import org.springframework.validation.annotation.Validated;
@@ -49,7 +50,7 @@ public class ItemRequestController {
     public List<ItemRequestDtoRsp> getRequestsList(
             @RequestHeader("X-Sharer-User-Id") long userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-            @RequestParam(defaultValue = "10") @PositiveOrZero int size) {
+            @RequestParam(defaultValue = "10") @Positive int size) {
         return itemRequestService.getRequests(userId, from, size);
     }
 }

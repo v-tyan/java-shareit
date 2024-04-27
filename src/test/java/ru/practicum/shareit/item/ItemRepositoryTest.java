@@ -21,7 +21,7 @@ import ru.practicum.shareit.user.User;
 @DataJpaTest
 @AutoConfigureTestDatabase
 @RunWith(SpringRunner.class)
-class ItemRepositoryTest {
+public class ItemRepositoryTest {
     User user = User.builder()
             .id(null)
             .name("user")

@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -25,7 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
-import ru.practicum.shareit.booking.dto.BookingDtoForItem;
+import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 
 @WebMvcTest(controllers = BookingController.class)
@@ -50,11 +52,10 @@ class BookingControllerTest {
             .booker(user)
             .status(BookingStatus.WAITING)
             .build();
-    BookingDtoForItem bookingDtoForItem = BookingDtoForItem.builder()
+    BookingDtoRequest bookingDtoRequest = BookingDtoRequest.builder()
             .id(1L)
             .start(LocalDateTime.now().plusHours(1))
             .end(LocalDateTime.now().plusHours(2))
-            .bookerId(1L)
             .itemId(1L)
             .build();
 
@@ -66,26 +67,13 @@ class BookingControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("X-Sharer-User-Id", 1L)
-                .content(objectMapper.writeValueAsString(bookingDtoForItem)))
+                .content(objectMapper.writeValueAsString(bookingDtoRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.item.id").value(1L))
                 .andExpect(jsonPath("$.item.name").value("name"))
                 .andExpect(jsonPath("$.booker.name").value("name"));
+        verify(bookingService, times(1)).createBooking(1L, bookingDtoRequest);
     }
-
-    // @Test
-    // void create_isBadRequest() throws Exception {
-    // when(bookingService.create(anyLong(), any())).thenReturn(bdr);
-    // bookingDto.setEnd(LocalDateTime.now());
-    // bookingDto.setStart(LocalDateTime.now().plusHours(1));
-    //
-    // mvc.perform(post("/bookings")
-    // .contentType(MediaType.APPLICATION_JSON)
-    // .accept(MediaType.APPLICATION_JSON)
-    // .header("X-Sharer-User-Id", 1L)
-    // .content(objectMapper.writeValueAsString(bookingDto)))
-    // .andExpect(status().isBadRequest());
-    // }
 
     @Test
     void changeStatusTest() throws Exception {
@@ -98,6 +86,7 @@ class BookingControllerTest {
                 .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("APPROVED"));
+        verify(bookingService, times(1)).updateBooking(1L, 1L, true);
     }
 
     @Test
@@ -112,6 +101,7 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.item.id").value(1L))
                 .andExpect(jsonPath("$.item.name").value("name"))
                 .andExpect(jsonPath("$.booker.name").value("name"));
+        verify(bookingService, times(1)).getBooking(user.getId(), bookingDtoResponse.getId());
     }
 
     @Test
@@ -127,6 +117,7 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$[0].item.id").value(1L))
                 .andExpect(jsonPath("$[0].item.name").value("name"))
                 .andExpect(jsonPath("$[0].booker.name").value("name"));
+        verify(bookingService, times(1)).getBookings(user.getId(), "ALL", 0, 10);
     }
 
     @Test
@@ -142,5 +133,6 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$[0].item.id").value(1L))
                 .andExpect(jsonPath("$[0].item.name").value("name"))
                 .andExpect(jsonPath("$[0].booker.name").value("name"));
+        verify(bookingService, times(1)).getBookingFromOwner(1L, "ALL", 0, 10);
     }
 }
