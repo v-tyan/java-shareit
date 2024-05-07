@@ -11,7 +11,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 @Builder
 public class ItemRequestDtoRsp {
     private Long id;
-    private Long requesterId;
+    private Long requestor;
     private String description;
     private LocalDateTime created;
     private List<ItemDto> items;

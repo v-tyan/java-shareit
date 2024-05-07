@@ -18,7 +18,7 @@ public class ItemRequestMapper {
     public static ItemRequestDtoRsp toItemRequestDtoRsp(ItemRequest itemRequest) {
         return ItemRequestDtoRsp.builder()
                 .id(itemRequest.getId())
-                .requesterId(itemRequest.getRequestor().getId())
+                .requestor(itemRequest.getRequestor().getId())
                 .description(itemRequest.getDescription())
                 .created(itemRequest.getCreated())
                 .items(new ArrayList<>())

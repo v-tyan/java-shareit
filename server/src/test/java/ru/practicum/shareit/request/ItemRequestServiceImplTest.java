@@ -64,7 +64,7 @@ class ItemRequestServiceImplTest {
                 .build();
         itemRequestDtoRsp = ItemRequestDtoRsp.builder()
                 .id(1L)
-                .requesterId(1L)
+                .requestor(1L)
                 .description("description")
                 .created(LocalDateTime.now())
                 .items(new ArrayList<>())

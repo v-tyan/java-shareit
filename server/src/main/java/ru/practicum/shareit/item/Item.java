@@ -9,8 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -38,15 +36,12 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Item name can't be blank")
     @Column
     private String name;
 
-    @NotBlank(message = "Item description can't be blank")
     @Column
     private String description;
 
-    @NotNull(message = "Availability status is absent")
     @Column
     private Boolean available;
 

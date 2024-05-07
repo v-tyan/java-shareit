@@ -2,11 +2,9 @@ package ru.practicum.shareit.item;
 
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +23,6 @@ import ru.practicum.shareit.item.dto.ItemDtoBooking;
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
-@Validated
 public class ItemController {
     private final ItemService itemService;
 
@@ -42,7 +39,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto itemDto) {
         return itemService.createItem(userId, itemDto);
     }
 
@@ -62,7 +59,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(
             @PathVariable long itemId,
-            @RequestBody @Valid CommentDto commentDto,
+            @RequestBody CommentDto commentDto,
             @RequestHeader(name = "X-Sharer-User-Id") long authorId) {
         return itemService.createComment(itemId, commentDto, authorId);
     }
