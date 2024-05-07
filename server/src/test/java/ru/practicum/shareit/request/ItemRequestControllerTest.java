@@ -70,7 +70,7 @@ class ItemRequestControllerTest {
                 .content(objectMapper.writeValueAsString(itemRequestDtoRsp)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.requesterId").value(1L))
+                .andExpect(jsonPath("$.requestor").value(1L))
                 .andExpect(jsonPath("$.description").value("description"));
     }
 
@@ -98,7 +98,7 @@ class ItemRequestControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.requesterId").value(1L))
+                .andExpect(jsonPath("$.requestor").value(1L))
                 .andExpect(jsonPath("$.description").value("description"));
     }
 
@@ -113,7 +113,7 @@ class ItemRequestControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].requesterId").value(1L))
+                .andExpect(jsonPath("$[0].requestor").value(1L))
                 .andExpect(jsonPath("$[0].description").value("description"));
     }
 }
