@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.dto;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
@@ -13,6 +14,7 @@ import ru.practicum.shareit.validation.Update;
 public class UserDto {
     private long id;
 
+    @NotBlank(groups = { Create.class }, message = "Name can't be blank")
     private String name;
 
     @NotNull(groups = { Create.class }, message = "Invalid email")

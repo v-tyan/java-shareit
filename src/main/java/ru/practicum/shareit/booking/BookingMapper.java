@@ -10,13 +10,13 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 public class BookingMapper {
-    public static Booking toBooking(BookingDtoRequest bookingDtoRequest, Item inputItem, User inputUser) {
+    public static Booking toBooking(BookingDtoRequest bookingDtoRequest, Item item, User user) {
         return Booking.builder()
                 .id(bookingDtoRequest.getId())
                 .start(bookingDtoRequest.getStart())
                 .end(bookingDtoRequest.getEnd())
-                .item(inputItem)
-                .booker(inputUser)
+                .item(item)
+                .booker(user)
                 .build();
     }
 
