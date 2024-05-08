@@ -3,7 +3,6 @@ package ru.practicum.shareit.request.dto;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Builder;
@@ -19,7 +18,6 @@ public class ItemRequestDtoReq {
     @Size(groups = Create.class, min = 1, max = 200)
     private String description;
 
-    @NotNull
     private long requestor;
 
     private LocalDateTime created;
